@@ -5,8 +5,6 @@ certs/*.jpeg
 certs/*.png
 data/*.csv
 data/*.json
-output/*.csv
-!output/README.md
 !certs/README.md
 !data/README.md
 
