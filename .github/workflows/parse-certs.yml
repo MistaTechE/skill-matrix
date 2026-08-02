@@ -1,0 +1,32 @@
+name: Parse Certs
+
+# Run manually from the Actions tab — never automatically, so you control
+# exactly when it runs and what it processes.
+on:
+  workflow_dispatch:
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run parser
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python parser/parser.py
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: skills-csv
+          path: output/skills.csv
