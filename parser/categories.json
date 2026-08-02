@@ -1,0 +1,69 @@
+{
+  "_comment": "Edit this to match your career focus. 'category' = top-level buckets for your Tableau viz. 'subcategories' = the allowed sub-tags the LLM can choose from for that category. Keep this list stable over time so your CSV stays consistent as you add more certs.",
+  "categories": {
+    "IT Support & Systems Administration": [
+      "Help Desk / End-User Support",
+      "Windows Administration",
+      "macOS / Apple Administration",
+      "Hardware Troubleshooting",
+      "Device Imaging & Deployment",
+      "IT Service Management (ITIL)"
+    ],
+    "Networking": [
+      "Network Fundamentals",
+      "Routing & Switching",
+      "Wireless Networking",
+      "VPN & Remote Access",
+      "Network Troubleshooting"
+    ],
+    "Cybersecurity": [
+      "Security Fundamentals",
+      "Identity & Access Management",
+      "Endpoint Security",
+      "Security Compliance",
+      "Incident Response"
+    ],
+    "Cloud Computing": [
+      "AWS",
+      "Microsoft Azure",
+      "Google Cloud",
+      "Cloud Architecture",
+      "Cloud Storage & Backup"
+    ],
+    "Software Development": [
+      "Python",
+      "JavaScript",
+      "Web Development",
+      "Databases & SQL",
+      "Scripting & Automation",
+      "Version Control (Git)"
+    ],
+    "Data & Analytics": [
+      "Data Analysis",
+      "Data Visualization",
+      "Excel / Spreadsheets",
+      "Reporting & Dashboards"
+    ],
+    "Project & IT Management": [
+      "Project Management",
+      "Agile / Scrum",
+      "Process Improvement",
+      "Vendor / Asset Management"
+    ],
+    "Education Technology": [
+      "Learning Management Systems",
+      "Classroom Technology",
+      "Student Information Systems",
+      "Training & Instructional Design"
+    ],
+    "Professional & Soft Skills": [
+      "Communication",
+      "Customer Service",
+      "Leadership",
+      "Documentation & Technical Writing"
+    ],
+    "Uncategorized": [
+      "Needs Manual Review"
+    ]
+  }
+}
