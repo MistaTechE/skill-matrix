@@ -1,0 +1,6 @@
+cert_name,issuing_org,date_completed,hours,category,subcategories,skills,source_file,needs_review
+Wgu.ed4 BACK-END,Western Governors University,"Jun 26, 2025",,,,,SQL certs.pdf (page 1),yes (AI call failed — see console output; heuristic values only)
+Introduction to SQL,,"27 October, 2023",3,,,,SQL certs.pdf (page 2),yes (AI call failed — see console output; heuristic values only)
+Programming Foundations: Databases,,"Nov 01, 2023",2.43,,,Database Development Databases Programming Foundations,SQL certs.pdf (page 3),yes (AI call failed — see console output; heuristic values only)
+MySQL Fundamentals,,"12 November, 2023",2.6,,,,SQL certs.pdf (page 4),yes (AI call failed — see console output; heuristic values only)
+MySQL Fundamentals Part 2,,"12 July, 2024",2.7,,,,SQL certs.pdf (page 5),yes (AI call failed — see console output; heuristic values only)
