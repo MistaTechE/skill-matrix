@@ -415,8 +415,11 @@ def main():
 
     pdf_files = sorted(certs_dir.glob("*.pdf"))
     if not pdf_files:
-        print(f"No PDFs found in {certs_dir}")
-        sys.exit(0)
+        print(f"No PDFs found in {certs_dir} — writing an empty CSV with headers only.")
+        with open(out_path, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+            writer.writeheader()
+        return
 
     taxonomy = load_taxonomy()
     use_llm = not args.no_llm
