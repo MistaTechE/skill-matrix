@@ -52,7 +52,7 @@ DEFAULT_CERTS_DIR = REPO_ROOT / "certs"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "output"
 CATEGORIES_PATH = Path(__file__).resolve().parent / "categories.json"
 
-DEFAULT_MODELS = ["qwen2.5vl", "moondream"]
+DEFAULT_MODELS = ["qwen2.5vl:3b", "moondream"]
 DEFAULT_OLLAMA_HOST = "http://localhost:11434"
 
 CSV_FIELDS = [
@@ -290,7 +290,9 @@ def build_prompt(heuristic_guesses: dict, ocr_text: str, taxonomy: dict) -> str:
     guesses_str = json.dumps(heuristic_guesses, indent=2)
     return f"""You are reading a professional certificate image for a personal skills tracker.
 
-Look at the certificate image directly. A simple text-extraction pass already made first guesses for some fields (may be wrong or incomplete, especially if the cert uses a graphic/badge layout) — use these as hints, but trust the image over them if they disagree:
+Look at the certificate image directly. A simple text-extraction pass already made first guesses for some fields (may be wrong or incomplete, especially if the cert uses a graphic/badge layout) — use these as hints, but trust the image over them if they disagree.
+
+IMPORTANT: If you cannot clearly read a field from the image or the provided text, respond with an empty string ("") for that field instead of guessing a plausible-sounding value. This matters most for issuing_org — do NOT default to a common platform name (e.g. "Coursera") unless you can actually see its name or logo in the image. A blank field is much more useful than a confident-sounding wrong guess.
 {guesses_str}
 
 Extracted text, if any (may be empty or garbled):
@@ -304,7 +306,7 @@ Allowed taxonomy for category/subcategories (pick from this list only):
 Respond with ONLY a JSON object, no other text, in this exact shape:
 {{
   "cert_name": "<the actual course/certificate title, not boilerplate like 'Certificate of Completion'>",
-  "issuing_org": "<the issuing organization/platform, e.g. 'Coursera', 'Western Governors University'>",
+  "issuing_org": "<the issuing organization/platform ONLY if actually visible/legible in the image — else empty string>",
   "date_completed": "<date in a clean 'Month D, YYYY' format>",
   "hours": "<numeric hours as a plain number if determinable, else empty string>",
   "category": "<one category from the taxonomy>",
@@ -334,7 +336,7 @@ def extract_with_ollama(model: str, ollama_host: str, image_b64: str, heuristic_
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=180) as resp:
+        with urllib.request.urlopen(req, timeout=420) as resp:
             body = json.loads(resp.read().decode("utf-8"))
         content = body.get("message", {}).get("content", "")
         content = re.sub(r"^```json\s*|\s*```$", "", content.strip())
@@ -350,6 +352,26 @@ def extract_with_ollama(model: str, ollama_host: str, image_b64: str, heuristic_
 # ---------------------------------------------------------------------------
 # Main pipeline
 # ---------------------------------------------------------------------------
+
+def as_list(value) -> list:
+    """Some smaller models return a plain string instead of a JSON list for
+    list-shaped fields. Normalize either into a real list instead of
+    silently exploding a string into one item per character."""
+    if isinstance(value, list):
+        return [str(v).strip() for v in value if str(v).strip()]
+    if isinstance(value, str):
+        return [v.strip() for v in re.split(r"[;,]", value) if v.strip()]
+    return []
+
+
+def is_valid_field(value) -> bool:
+    """Reject obviously-broken output: weaker models sometimes echo the
+    literal placeholder text from the prompt (e.g. '<the actual course
+    title...>') instead of real content."""
+    if not isinstance(value, str) or not value.strip():
+        return False
+    return "<" not in value and ">" not in value
+
 
 def process_page(pdf_name: str, page_num: int, page_data: dict, model: str, ollama_host: str,
                   taxonomy: dict, use_ai: bool) -> dict:
@@ -376,15 +398,26 @@ def process_page(pdf_name: str, page_num: int, page_data: dict, model: str, olla
 
     if use_ai:
         result = extract_with_ollama(model, ollama_host, page_data["image_b64"], heuristic, text, taxonomy)
+        org_unverified = False
         if result:
-            cert_name = result.get("cert_name") or cert_name
-            org = result.get("issuing_org") or org
-            date = result.get("date_completed") or date
-            hours = str(result.get("hours") or hours)
-            skills = "; ".join(result.get("skills", [])) or skills
-            category = result.get("category", "")
-            subcategories = "; ".join(result.get("subcategories", []))
+            if is_valid_field(result.get("cert_name")):
+                cert_name = result["cert_name"]
+            if is_valid_field(result.get("issuing_org")):
+                org_unverified = not heuristic["issuing_org"]  # AI supplied it, text pass found nothing
+                org = result["issuing_org"]
+            if is_valid_field(result.get("date_completed")):
+                date = result["date_completed"]
+            if result.get("hours") not in (None, ""):
+                hours = str(result["hours"])
+            ai_skills = as_list(result.get("skills"))
+            if ai_skills:
+                skills = "; ".join(ai_skills)
+            category = result.get("category", "") if is_valid_field(result.get("category")) else ""
+            subcategories = "; ".join(as_list(result.get("subcategories")))
             needs_review = "yes (AI flagged low confidence — verify)" if result.get("low_confidence") else ("no" if category else "yes")
+            if org_unverified:
+                org_note = "yes (org guessed by AI from image only, not corroborated by text — verify)"
+                needs_review = org_note if needs_review == "no" else f"{needs_review}; {org_note}"
         else:
             needs_review = "yes (AI call failed — see console output; heuristic values only)"
 
