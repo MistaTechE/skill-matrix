@@ -26,25 +26,45 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install tesseract (for OCR fallback)
+      - name: Install tesseract (for OCR text-hint fallback)
         run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Run parser
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Install Ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Cache Ollama models
+        uses: actions/cache@v4
+        with:
+          path: ~/.ollama/models
+          key: ollama-models-qwen2.5vl-moondream
+
+      - name: Start Ollama server
+        run: |
+          ollama serve &
+          for i in $(seq 1 30); do
+            curl -s http://localhost:11434 >/dev/null && break
+            sleep 1
+          done
+
+      - name: Pull vision models
+        run: |
+          ollama pull qwen2.5vl
+          ollama pull moondream
+
+      - name: Run parser (both models)
         run: python parser/parser.py
 
-      - name: Commit updated CSV
+      - name: Commit updated CSVs
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto-update skills.csv"
-          file_pattern: output/skills.csv
+          commit_message: "Auto-update skills CSVs"
+          file_pattern: "output/*.csv"
 
-      - name: Upload results as artifact too
+      - name: Upload results as artifacts too
         uses: actions/upload-artifact@v4
         with:
-          name: skills-csv
-          path: output/skills.csv
+          name: skills-csvs
+          path: output/*.csv
