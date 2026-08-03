@@ -1,5 +1,3 @@
-#parser.py
-
 #!/usr/bin/env python3
 """
 parser.py — Phase 1 of skill-matrix
