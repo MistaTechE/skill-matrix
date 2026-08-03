@@ -1,5 +1,7 @@
 #TODO
-- add to a project
+DONE- add to a project
+- figure out how to create pulls issues etc that land in the project kanban
+- Ask Claude to create hard coded categories let the models choose from the options, and let the models choose the sub categories.
 - connect with Jira
 - test with Playwright
 
