@@ -1,0 +1,6 @@
+cert_name,issuing_org,date_completed,hours,category,subcategories,skills,source_file,needs_review
+SQL certs - page 1,,,,,,,SQL certs.pdf (page 1),yes (no extractable text — install/check tesseract-ocr for OCR fallback)
+Introduction to SQL,,"27 October, 2023",3,,,,SQL certs.pdf (page 2),yes
+Programming Foundations: Databases,,"Nov 01, 2023",2.43,,,Database Development Databases Programming Foundations,SQL certs.pdf (page 3),yes
+MySQL Fundamentals,,"12 November, 2023",2.6,,,,SQL certs.pdf (page 4),yes
+MySQL Fundamentals Part 2,,"12 July, 2024",2.7,,,,SQL certs.pdf (page 5),yes
