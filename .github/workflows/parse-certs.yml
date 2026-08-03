@@ -51,7 +51,7 @@ jobs:
 
       - name: Pull vision models
         run: |
-          ollama pull qwen2.5vl
+          ollama pull qwen2.5vl:3b
           ollama pull moondream
 
       - name: Run parser (both models)
