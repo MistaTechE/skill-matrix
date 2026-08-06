@@ -1,0 +1,9 @@
+Handshake AI
+Fellow - Annotator and Reviewer
+Contributes to AI model development through data annotation, prompt evaluation, and quality review
+Annotates visuals (images, videos, graphics), audio, text, and more complex data
+Reviews AI-generated responses for accuracy, aesthetics, safety, and policy compliance
+Makes fine-grained quality judgments, utilizes comparison workflows, adheres to training material guidelines and ad hoc feedback
+Evaluates peer work and provides feedback to improve annotation quality and evaluation consistency
+
+
