@@ -4,6 +4,7 @@ DONE- add to a project
 - Ask Claude to create hard coded categories let the models choose from the options, and let the models choose the sub categories.
 - connect with Jira
 - test with Playwright
+- test with pytest
 - test with some kind of JSON to SQL setup for storage, what services can I connect with?
 
 
