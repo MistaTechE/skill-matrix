@@ -341,9 +341,14 @@ def extract_with_ollama(model: str, ollama_host: str, image_b64: str, heuristic_
         content = body.get("message", {}).get("content", "")
         content = re.sub(r"^```json\s*|\s*```$", "", content.strip())
         return json.loads(content)
-    except urllib.error.URLError as e:
-        print(f"  [!] Can't reach Ollama at {ollama_host} ({e}). Is 'ollama serve' running?", file=sys.stderr)
+    
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8", errors="replace")
+        print(f"  [!] Ollama HTTP {e.code}: {error_body}", file=sys.stderr)
         return {}
+    #except urllib.error.URLError as e:
+       # print(f"  [!] Can't reach Ollama at {ollama_host} ({e}). Is 'ollama serve' running?", file=sys.stderr)
+      #  return {}
     except Exception as e:
         print(f"  [!] Ollama ({model}) extraction failed: {e}", file=sys.stderr)
         return {}
