@@ -43,7 +43,6 @@ jobs:
 
       - name: Start Ollama server
         run: |
-          ollama serve &
           for i in $(seq 1 30); do
             curl -s http://localhost:11434 >/dev/null && break
             sleep 1
