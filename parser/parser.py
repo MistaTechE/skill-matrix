@@ -329,6 +329,9 @@ def extract_with_ollama(model: str, ollama_host: str, image_b64: str, heuristic_
         "messages": [{"role": "user", "content": prompt, "images": [image_b64]}],
         "format": "json",
         "stream": False,
+        "options": {
+            "num_ctx": 6000
+        },
     }
     req = urllib.request.Request(
         f"{ollama_host.rstrip('/')}/api/chat",
