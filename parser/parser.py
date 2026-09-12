@@ -4,25 +4,16 @@ parser.py — Phase 1 of skill-matrix
 
 Scans the local certs/ folder for PDF certificates, extracts useful fields
 (name, issuing org, date, hours, skills), infers a category/subcategory for
-each one, and writes everything out to output/skills_<model>.csv — one CSV
-per vision model, so you can compare accuracy before picking one.
+each one, and writes everything out to output/skills_<model>.csv
 
-Nothing leaves your computer. AI extraction runs through Ollama on
+Nothing leaves computer. AI extraction runs through Ollama on
 localhost — no cloud API, no account, no network required once the models
 are pulled. Nothing in certs/, data/, or output/ is committed to git except
 the CSVs themselves — see .gitignore.
 
-Requires Ollama running locally (https://ollama.com) with vision models
+Requires Ollama running locally (https://ollama.com) with vision model
 pulled, e.g.:
     ollama pull qwen2.5vl
-    ollama pull moondream
-
-Usage:
-    python parser/parser.py
-    python parser/parser.py --certs-dir /path/to/certs
-    python parser/parser.py --models qwen2.5vl,moondream
-    python parser/parser.py --ollama-host http://localhost:11434
-    python parser/parser.py --no-ai     # skip AI entirely, heuristics-only CSV
 """
 
 import argparse
@@ -52,7 +43,7 @@ DEFAULT_CERTS_DIR = REPO_ROOT / "certs"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "output"
 CATEGORIES_PATH = Path(__file__).resolve().parent / "categories.json"
 
-DEFAULT_MODELS = ["qwen2.5vl:3b", "moondream"]
+DEFAULT_MODELS = ["qwen2.5vl:3b"]
 DEFAULT_OLLAMA_HOST = "http://localhost:11434"
 
 CSV_FIELDS = [
