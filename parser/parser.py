@@ -26,7 +26,7 @@ import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
-
+from datetime import datetime
 import pdfplumber
 
 try:
@@ -491,7 +491,8 @@ def main():
                 tag = f" [{page_data['method']}]" if page_data["method"] != "text" else ""
                 print(f"  {pdf_path.name} page {i}{tag}: {row['cert_name']}")
 
-        out_name = "skills.csv" if model == "heuristic" else f"skills_{model.replace(':', '-')}.csv"
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        out_name = f"skills_{timestamp}.csv" if model == "heuristic" else f"skills_{model.replace(':', '-')}_{timestamp}.csv"
         out_path = out_dir / out_name
         write_csv(rows, out_path)
 
