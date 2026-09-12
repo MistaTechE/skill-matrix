@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.ollama/models
-          key: ollama-models-qwen2.5vl-moondream
+          key: ollama-models-qwen2.5vl
 
       - name: Start Ollama server
         run: |
@@ -54,7 +54,6 @@ jobs:
       - name: Pull vision models
         run: |
           ollama pull qwen2.5vl:3b
-          ollama pull moondream
 
       - name: Run parser (both models)
         run: python parser/parser.py
