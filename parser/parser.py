@@ -404,7 +404,7 @@ def process_page(pdf_name: str, page_num: int, page_data: dict, model: str, olla
             if is_valid_field(result.get("issuing_org")):
                 org_unverified = not heuristic["issuing_org"]  # AI supplied it, text pass found nothing
                 org = result["issuing_org"]
-            if is_valid_field(result.get("date_completed")):
+            if is_valid_field(result.get("date_completed")) and not heuristic["date_completed"]:
                 date = result["date_completed"]
             if result.get("hours") not in (None, ""):
                 hours = str(result["hours"])
